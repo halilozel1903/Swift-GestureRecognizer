@@ -22,6 +22,8 @@
 		9F1C67A71F87618B00CA10FF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9F1C67AA1F87618B00CA10FF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9F1C67AC1F87618B00CA10FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9F1C67B21F8761C000CA10FF /* halil.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = halil.jpg; path = ../../../Downloads/halil.jpg; sourceTree = "<group>"; };
+		9F1C67B31F8761C000CA10FF /* ibrahim.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ibrahim.jpg; path = ../../../Downloads/ibrahim.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,8 @@
 		9F1C679F1F87618B00CA10FF /* GestureRecognizer */ = {
 			isa = PBXGroup;
 			children = (
+				9F1C67B21F8761C000CA10FF /* halil.jpg */,
+				9F1C67B31F8761C000CA10FF /* ibrahim.jpg */,
 				9F1C67A01F87618B00CA10FF /* AppDelegate.swift */,
 				9F1C67A21F87618B00CA10FF /* ViewController.swift */,
 				9F1C67A41F87618B00CA10FF /* Main.storyboard */,
