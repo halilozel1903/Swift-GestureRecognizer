@@ -1,1 +1,1 @@
-# Swift-GestureRecognizer
+# Swift Gesture Recognizer
