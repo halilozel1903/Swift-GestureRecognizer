@@ -61,7 +61,7 @@ final class GestureCardView: UIView {
         layer.shadowOffset = CGSize(width: 0, height: 10)
 
         // CGColor does not resolve dynamic colors automatically.
-        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (view: GestureCardView, _) in
+        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (view: Self, _) in
             view.layer.shadowColor = UIColor.label.cgColor
             view.layer.borderColor = view.symbolView.tintColor
                 .withAlphaComponent(0.35)
