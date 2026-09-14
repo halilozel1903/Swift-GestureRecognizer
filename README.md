@@ -3,7 +3,7 @@
 [![Platform](https://img.shields.io/badge/platform-iOS-lightgrey.svg)](https://developer.apple.com/ios/)
 [![iOS](https://img.shields.io/badge/iOS-18.0%2B-blue.svg)](https://developer.apple.com/ios/)
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)](https://swift.org)
-[![Xcode](https://img.shields.io/badge/Xcode-17-blue.svg)](https://developer.apple.com/xcode/)
+[![Xcode](https://img.shields.io/badge/Xcode-16%2B-blue.svg)](https://developer.apple.com/xcode/)
 [![UIKit](https://img.shields.io/badge/UI-UIKit-informational.svg)](https://developer.apple.com/documentation/uikit)
 [![CI](https://github.com/halilozel1903/swift-gesturerecognizer/actions/workflows/ci.yml/badge.svg)](https://github.com/halilozel1903/swift-gesturerecognizer/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
