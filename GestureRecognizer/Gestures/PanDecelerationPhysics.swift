@@ -1,4 +1,5 @@
 import CoreGraphics
+import Foundation
 
 enum PanDecelerationPhysics {
     /// Projects how far a pan would travel if deceleration matched UIScrollView defaults.
