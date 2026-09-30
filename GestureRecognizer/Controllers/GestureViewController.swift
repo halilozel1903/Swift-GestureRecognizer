@@ -89,11 +89,12 @@ final class GestureViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
+        let settingsItem = UIBarButtonItem(
             image: UIImage(systemName: "slider.horizontal.3"),
-            primaryAction: UIAction { [weak self] _ in self?.openSettings() },
-            accessibilityLabel: "Gesture settings"
+            primaryAction: UIAction { [weak self] _ in self?.openSettings() }
         )
+        settingsItem.accessibilityLabel = "Gesture settings"
+        navigationItem.rightBarButtonItem = settingsItem
 
         setUpLayout()
         setUpGestures()
