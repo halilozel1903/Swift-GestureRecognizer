@@ -33,6 +33,14 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO
 
+      - name: Test
+        run: |
+          xcodebuild test \
+            -project GestureRecognizer.xcodeproj \
+            -scheme GestureRecognizer \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO
+
   lint:
     name: SwiftLint
     runs-on: macos-15
