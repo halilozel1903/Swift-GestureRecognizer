@@ -29,7 +29,10 @@ extension GestureViewController: UIContextMenuInteractionDelegate {
         logStore.append(recognizerName: "Context menu", state: .began)
 
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-            let next = UIAction(title: "Next profile", image: UIImage(systemName: "person.crop.circle.badge.plus")) { _ in
+            let next = UIAction(
+                title: "Next profile",
+                image: UIImage(systemName: "person.crop.circle.badge.plus")
+            ) { _ in
                 self.showProfile(at: self.profileIndex + 1, announcement: "Context menu")
             }
             let reset = UIAction(title: "Reset card", image: UIImage(systemName: "arrow.counterclockwise")) { _ in

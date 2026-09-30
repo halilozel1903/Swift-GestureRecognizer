@@ -1,5 +1,11 @@
 import UIKit
 
+private struct RecognizerRegistration {
+    let recognizer: UIGestureRecognizer
+    let kind: GestureRecognizerKind
+    let logName: String
+}
+
 extension GestureViewController {
     func setUpGestures() {
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap))
@@ -34,23 +40,23 @@ extension GestureViewController {
 
         cardView.addInteraction(UIContextMenuInteraction(delegate: self))
 
-        let cardRecognizers: [(UIGestureRecognizer, GestureRecognizerKind, String)] = [
-            (doubleTap, .doubleTap, "Double tap"),
-            (singleTap, .singleTap, "Single tap"),
-            (longPress, .longPress, "Long press"),
-            (swipeLeft, .swipeLeft, "Swipe left"),
-            (swipeRight, .swipeRight, "Swipe right"),
-            (pan, .pan, "Pan"),
-            (pinch, .pinch, "Pinch"),
-            (rotation, .rotation, "Rotation"),
-            (circle, .circleStroke, "Circle stroke"),
-            (hover, .hover, "Hover")
+        let cardRecognizers: [RecognizerRegistration] = [
+            RecognizerRegistration(recognizer: doubleTap, kind: .doubleTap, logName: "Double tap"),
+            RecognizerRegistration(recognizer: singleTap, kind: .singleTap, logName: "Single tap"),
+            RecognizerRegistration(recognizer: longPress, kind: .longPress, logName: "Long press"),
+            RecognizerRegistration(recognizer: swipeLeft, kind: .swipeLeft, logName: "Swipe left"),
+            RecognizerRegistration(recognizer: swipeRight, kind: .swipeRight, logName: "Swipe right"),
+            RecognizerRegistration(recognizer: pan, kind: .pan, logName: "Pan"),
+            RecognizerRegistration(recognizer: pinch, kind: .pinch, logName: "Pinch"),
+            RecognizerRegistration(recognizer: rotation, kind: .rotation, logName: "Rotation"),
+            RecognizerRegistration(recognizer: circle, kind: .circleStroke, logName: "Circle stroke"),
+            RecognizerRegistration(recognizer: hover, kind: .hover, logName: "Hover")
         ]
 
-        for (recognizer, kind, name) in cardRecognizers {
-            recognizer.delegate = self
-            cardView.addGestureRecognizer(recognizer)
-            register(recognizer, kind: kind, logName: name)
+        for entry in cardRecognizers {
+            entry.recognizer.delegate = self
+            cardView.addGestureRecognizer(entry.recognizer)
+            register(entry.recognizer, kind: entry.kind, logName: entry.logName)
         }
 
         edgePan.delegate = self
