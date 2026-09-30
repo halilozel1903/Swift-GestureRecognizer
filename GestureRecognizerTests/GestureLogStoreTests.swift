@@ -1,6 +1,6 @@
+@testable import GestureRecognizer
 import Testing
 import UIKit
-@testable import GestureRecognizer
 
 @MainActor
 struct GestureLogStoreTests {
