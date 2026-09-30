@@ -6,16 +6,35 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		A1TEST051F87618B00CA10FF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9F1C67951F87618B00CA10FF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9F1C679C1F87618B00CA10FF;
+			remoteInfo = GestureRecognizer;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		9F1C679D1F87618B00CA10FF /* GestureRecognizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GestureRecognizer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1TEST031F87618B00CA10FF /* GestureRecognizerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GestureRecognizerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9F1C67C01F87618B00CA10FF /* GestureRecognizer */ = {isa = PBXFileSystemSynchronizedRootGroup; path = GestureRecognizer; sourceTree = "<group>"; };
+		A1TEST041F87618B00CA10FF /* GestureRecognizerTests */ = {isa = PBXFileSystemSynchronizedRootGroup; path = GestureRecognizerTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		9F1C679A1F87618B00CA10FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1TEST021F87618B00CA10FF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,6 +48,7 @@
 			isa = PBXGroup;
 			children = (
 				9F1C67C01F87618B00CA10FF /* GestureRecognizer */,
+				A1TEST041F87618B00CA10FF /* GestureRecognizerTests */,
 				9F1C679E1F87618B00CA10FF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -37,6 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				9F1C679D1F87618B00CA10FF /* GestureRecognizer.app */,
+				A1TEST031F87618B00CA10FF /* GestureRecognizerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -64,6 +85,27 @@
 			productReference = 9F1C679D1F87618B00CA10FF /* GestureRecognizer.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A1TEST011F87618B00CA10FF /* GestureRecognizerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1TEST091F87618B00CA10FF /* Build configuration list for PBXNativeTarget "GestureRecognizerTests" */;
+			buildPhases = (
+				A1TEST001F87618B00CA10FF /* Sources */,
+				A1TEST021F87618B00CA10FF /* Frameworks */,
+				A1TEST071F87618B00CA10FF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1TEST061F87618B00CA10FF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A1TEST041F87618B00CA10FF /* GestureRecognizerTests */,
+			);
+			name = GestureRecognizerTests;
+			productName = GestureRecognizerTests;
+			productReference = A1TEST031F87618B00CA10FF /* GestureRecognizerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -77,6 +119,10 @@
 				TargetAttributes = {
 					9F1C679C1F87618B00CA10FF = {
 						CreatedOnToolsVersion = 9.0;
+					};
+					A1TEST011F87618B00CA10FF = {
+						CreatedOnToolsVersion = 17.0;
+						TestTargetID = 9F1C679C1F87618B00CA10FF;
 					};
 				};
 			};
@@ -95,12 +141,23 @@
 			projectRoot = "";
 			targets = (
 				9F1C679C1F87618B00CA10FF /* GestureRecognizer */,
+				A1TEST011F87618B00CA10FF /* GestureRecognizerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		9F1C679B1F87618B00CA10FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1TEST071F87618B00CA10FF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -118,6 +175,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1TEST001F87618B00CA10FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A1TEST061F87618B00CA10FF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9F1C679C1F87618B00CA10FF /* GestureRecognizer */;
+			targetProxy = A1TEST051F87618B00CA10FF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		9F1C67AD1F87618B00CA10FF /* Debug */ = {
@@ -289,6 +364,54 @@
 			};
 			name = Release;
 		};
+		A1TEST081F87618B00CA10FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ozel.halil.GestureRecognizerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GestureRecognizer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GestureRecognizer";
+			};
+			name = Debug;
+		};
+		A1TEST0A1F87618B00CA10FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ozel.halil.GestureRecognizerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GestureRecognizer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GestureRecognizer";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -306,6 +429,15 @@
 			buildConfigurations = (
 				9F1C67B01F87618B00CA10FF /* Debug */,
 				9F1C67B11F87618B00CA10FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1TEST091F87618B00CA10FF /* Build configuration list for PBXNativeTarget "GestureRecognizerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1TEST081F87618B00CA10FF /* Debug */,
+				A1TEST0A1F87618B00CA10FF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
