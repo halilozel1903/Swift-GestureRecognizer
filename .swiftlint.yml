@@ -1,5 +1,6 @@
 included:
   - GestureRecognizer
+  - GestureRecognizerTests
 
 excluded:
   - build
