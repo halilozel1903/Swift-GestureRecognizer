@@ -1,5 +1,4 @@
 import CoreGraphics
-@testable import GestureRecognizer
 import Testing
 
 struct CircleStrokeDetectorTests {

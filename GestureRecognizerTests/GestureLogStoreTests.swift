@@ -1,4 +1,3 @@
-@testable import GestureRecognizer
 import Testing
 import UIKit
 
