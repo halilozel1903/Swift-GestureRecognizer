@@ -3,21 +3,41 @@ import UIKit
 /// Hosts the gesture playground: tapping the card swaps the profile, while the
 /// remaining recognizers move, scale and rotate it.
 final class GestureViewController: UIViewController {
-    private enum Layout {
+    enum Layout {
         static let cardWidthMultiplier: CGFloat = 0.8
         static let cardMaxWidth: CGFloat = 420
         static let minimumScale: CGFloat = 0.6
         static let maximumScale: CGFloat = 2.5
     }
 
-    private let profiles = Profile.all
-    private var profileIndex = 0
+    let profiles = Profile.all
+    var profileIndex = 0
 
-    private var translation: CGPoint = .zero
-    private var scale: CGFloat = 1
-    private var rotation: CGFloat = 0
+    var translation: CGPoint = .zero
+    var scale: CGFloat = 1
+    var rotation: CGFloat = 0
 
-    private let cardView = GestureCardView()
+    let settings = GestureSettings.shared
+    let logStore = GestureLogStore.shared
+    var recognizersByKind: [GestureRecognizerKind: UIGestureRecognizer] = [:]
+    var logTargets: [GestureStateLogTarget] = []
+
+    let cardView = GestureCardView()
+    private let logPanel = GestureLogPanelView()
+    private let dependencySummary = GestureDependencySummaryView()
+
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.alwaysBounceVertical = true
+        return scrollView
+    }()
+
+    private let contentStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 16
+        return stack
+    }()
 
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -32,8 +52,9 @@ final class GestureViewController: UIViewController {
     private let hintLabel: UILabel = {
         let label = UILabel()
         label.text = """
-        Tap to swap the profile, swipe to browse, drag, pinch and rotate freely. \
-        Double tap or long press to start over.
+        Tap to swap profiles, swipe to browse, drag with momentum, pinch and rotate. \
+        Draw a circle on the card, hover with a pointer, long-press for a context menu, \
+        or swipe in from the left screen edge. Toggle recognizers in Settings.
         """
         label.font = .preferredFont(forTextStyle: .footnote)
         label.adjustsFontForContentSizeCategory = true
@@ -68,29 +89,43 @@ final class GestureViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "slider.horizontal.3"),
+            primaryAction: UIAction { [weak self] _ in self?.openSettings() },
+            accessibilityLabel: "Gesture settings"
+        )
+
         setUpLayout()
         setUpGestures()
+        bindLogPanel()
+        applySettingsToRecognizers()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(settingsDidChange),
+            name: .gestureSettingsDidChange,
+            object: nil
+        )
+
         showProfile(at: profileIndex, announcement: "Ready")
     }
 
-    // MARK: - Layout
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 
     private func setUpLayout() {
         view.backgroundColor = .systemGroupedBackground
-
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, hintLabel])
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
         cardView.translatesAutoresizingMaskIntoConstraints = false
-        statusLabel.translatesAutoresizingMaskIntoConstraints = false
-        resetButton.translatesAutoresizingMaskIntoConstraints = false
 
-        view.addSubview(stackView)
-        view.addSubview(cardView)
-        view.addSubview(statusLabel)
-        view.addSubview(resetButton)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentStack)
+
+        for item in [titleLabel, hintLabel, dependencySummary, cardView, statusLabel, logPanel, resetButton] {
+            contentStack.addArrangedSubview(item)
+        }
 
         let safeArea = view.safeAreaLayoutGuide
         let cardWidth = cardView.widthAnchor.constraint(
@@ -100,128 +135,57 @@ final class GestureViewController: UIViewController {
         cardWidth.priority = .defaultHigh
 
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 24),
-            stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
+            scrollView.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
 
-            cardView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            cardView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
+            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
+            contentStack.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 24),
+            contentStack.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -24),
+            contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24),
+            contentStack.widthAnchor.constraint(
+                equalTo: scrollView.frameLayoutGuide.widthAnchor,
+                constant: -48
+            ),
+
             cardWidth,
-            cardView.widthAnchor.constraint(lessThanOrEqualTo: safeArea.widthAnchor, multiplier: 0.9),
-            cardView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.cardMaxWidth),
-
-            statusLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
-            statusLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
-            statusLabel.bottomAnchor.constraint(equalTo: resetButton.topAnchor, constant: -16),
-
-            resetButton.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            resetButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -24)
+            cardView.widthAnchor.constraint(lessThanOrEqualTo: contentStack.widthAnchor, multiplier: 0.95),
+            cardView.widthAnchor.constraint(lessThanOrEqualToConstant: Layout.cardMaxWidth)
         ])
     }
 
-    // MARK: - Gestures
+    private func bindLogPanel() {
+        logStore.onUpdate = { [weak self] in
+            guard let self else { return }
+            let lines = logStore.entries.map(\.formattedLine)
+            logPanel.display(lines: lines)
+        }
+        logPanel.display(lines: [])
+    }
 
-    private func setUpGestures() {
-        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap))
-        doubleTap.numberOfTapsRequired = 2
+    func openSettings() {
+        navigationController?.pushViewController(GestureSettingsViewController(), animated: true)
+    }
 
-        let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap))
-        singleTap.require(toFail: doubleTap)
+    @objc
+    private func settingsDidChange() {
+        applySettingsToRecognizers()
+    }
 
-        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
-        longPress.minimumPressDuration = 0.4
-
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe))
-        swipeLeft.direction = .left
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe))
-        swipeRight.direction = .right
-
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
-        pan.maximumNumberOfTouches = 2
-        pan.require(toFail: swipeLeft)
-        pan.require(toFail: swipeRight)
-
-        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch))
-        let rotation = UIRotationGestureRecognizer(target: self, action: #selector(handleRotation))
-
-        for recognizer in [doubleTap, singleTap, longPress, swipeLeft, swipeRight, pan, pinch, rotation] {
-            recognizer.delegate = self
-            cardView.addGestureRecognizer(recognizer)
+    func applySettingsToRecognizers() {
+        for (kind, recognizer) in recognizersByKind {
+            recognizer.isEnabled = settings.isEnabled(kind)
         }
     }
 
-    @objc
-    private func handleSingleTap() {
-        showProfile(at: profileIndex + 1, announcement: "Single tap")
-        playFeedback(.light)
+    func register(_ recognizer: UIGestureRecognizer, kind: GestureRecognizerKind, logName: String) {
+        recognizersByKind[kind] = recognizer
+        logTargets.append(recognizer.attachStateLogging(name: logName))
+        recognizer.isEnabled = settings.isEnabled(kind)
     }
 
-    @objc
-    private func handleDoubleTap() {
-        resetCard(reason: "Double tap")
-    }
-
-    @objc
-    private func handleLongPress(_ recognizer: UILongPressGestureRecognizer) {
-        switch recognizer.state {
-        case .began:
-            playFeedback(.medium)
-            updateStatus("Long press — hold to preview, release to reset")
-            UIView.animate(withDuration: 0.2) {
-                self.cardView.alpha = 0.75
-            }
-        case .ended, .cancelled, .failed:
-            UIView.animate(withDuration: 0.2) {
-                self.cardView.alpha = 1
-            }
-            resetCard(reason: "Long press")
-        default:
-            break
-        }
-    }
-
-    @objc
-    private func handleSwipe(_ recognizer: UISwipeGestureRecognizer) {
-        let isForward = recognizer.direction == .left
-        showProfile(
-            at: profileIndex + (isForward ? 1 : -1),
-            announcement: isForward ? "Swipe left" : "Swipe right"
-        )
-    }
-
-    @objc
-    private func handlePan(_ recognizer: UIPanGestureRecognizer) {
-        let delta = recognizer.translation(in: view)
-        translation.x += delta.x
-        translation.y += delta.y
-        recognizer.setTranslation(.zero, in: view)
-
-        applyCardTransform()
-        updateStatus(String(format: "Pan — x: %.0f, y: %.0f", translation.x, translation.y))
-    }
-
-    @objc
-    private func handlePinch(_ recognizer: UIPinchGestureRecognizer) {
-        scale = min(max(scale * recognizer.scale, Layout.minimumScale), Layout.maximumScale)
-        recognizer.scale = 1
-
-        applyCardTransform()
-        updateStatus(String(format: "Pinch — scale: %.2fx", scale))
-    }
-
-    @objc
-    private func handleRotation(_ recognizer: UIRotationGestureRecognizer) {
-        rotation += recognizer.rotation
-        recognizer.rotation = 0
-
-        applyCardTransform()
-        let degrees = rotation * 180 / .pi
-        updateStatus(String(format: "Rotation — %.0f°", degrees))
-    }
-
-    // MARK: - State
-
-    private func showProfile(at index: Int, announcement: String) {
+    func showProfile(at index: Int, announcement: String) {
         let count = profiles.count
         profileIndex = ((index % count) + count) % count
         let profile = profiles[profileIndex]
@@ -234,7 +198,7 @@ final class GestureViewController: UIViewController {
         updateStatus("\(announcement) — \(profile.name)")
     }
 
-    private func resetCard(reason: String) {
+    func resetCard(reason: String) {
         translation = .zero
         scale = 1
         rotation = 0
@@ -246,41 +210,18 @@ final class GestureViewController: UIViewController {
         updateStatus("\(reason) — card reset")
     }
 
-    private func applyCardTransform() {
+    func applyCardTransform() {
         cardView.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
             .scaledBy(x: scale, y: scale)
             .rotated(by: rotation)
     }
 
-    private func updateStatus(_ text: String) {
+    func updateStatus(_ text: String) {
         statusLabel.text = text
     }
 
-    private func playFeedback(_ style: UIImpactFeedbackGenerator.FeedbackStyle) {
+    func playFeedback(_ style: UIImpactFeedbackGenerator.FeedbackStyle) {
         let generator = UIImpactFeedbackGenerator(style: style)
         generator.impactOccurred()
-    }
-}
-
-// MARK: - UIGestureRecognizerDelegate
-
-extension GestureViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(
-        _ gestureRecognizer: UIGestureRecognizer,
-        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
-    ) -> Bool {
-        isTransformGesture(gestureRecognizer) && isTransformGesture(otherGestureRecognizer)
-    }
-
-    /// Pan, pinch and rotation drive the same transform, so they must run together.
-    private func isTransformGesture(_ recognizer: UIGestureRecognizer) -> Bool {
-        switch recognizer {
-        case is UIPinchGestureRecognizer, is UIRotationGestureRecognizer:
-            true
-        case is UIPanGestureRecognizer:
-            !(recognizer is UIScreenEdgePanGestureRecognizer)
-        default:
-            false
-        }
     }
 }
