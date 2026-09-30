@@ -6,23 +6,33 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		A1TEST051F87618B00CA10FF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9F1C67951F87618B00CA10FF /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9F1C679C1F87618B00CA10FF;
-			remoteInfo = GestureRecognizer;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		9F1C679D1F87618B00CA10FF /* GestureRecognizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GestureRecognizer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1TEST031F87618B00CA10FF /* GestureRecognizerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GestureRecognizerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A1TEST0B1F87618B00CA10FF /* Exceptions for "GestureRecognizer" folder in "GestureRecognizerTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Gestures/CircleStrokeDetector.swift,
+				Gestures/PanDecelerationPhysics.swift,
+				Models/GestureLogEntry.swift,
+				Services/GestureLogStore.swift,
+			);
+			target = A1TEST011F87618B00CA10FF /* GestureRecognizerTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		9F1C67C01F87618B00CA10FF /* GestureRecognizer */ = {isa = PBXFileSystemSynchronizedRootGroup; path = GestureRecognizer; sourceTree = "<group>"; };
+		9F1C67C01F87618B00CA10FF /* GestureRecognizer */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A1TEST0B1F87618B00CA10FF /* Exceptions for "GestureRecognizer" folder in "GestureRecognizerTests" target */,
+			);
+			path = GestureRecognizer;
+			sourceTree = "<group>";
+		};
 		A1TEST041F87618B00CA10FF /* GestureRecognizerTests */ = {isa = PBXFileSystemSynchronizedRootGroup; path = GestureRecognizerTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -96,7 +106,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				A1TEST061F87618B00CA10FF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				A1TEST041F87618B00CA10FF /* GestureRecognizerTests */,
@@ -122,7 +131,6 @@
 					};
 					A1TEST011F87618B00CA10FF = {
 						CreatedOnToolsVersion = 17.0;
-						TestTargetID = 9F1C679C1F87618B00CA10FF;
 					};
 				};
 			};
@@ -185,14 +193,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		A1TEST061F87618B00CA10FF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9F1C679C1F87618B00CA10FF /* GestureRecognizer */;
-			targetProxy = A1TEST051F87618B00CA10FF /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		9F1C67AD1F87618B00CA10FF /* Debug */ = {
@@ -367,7 +367,6 @@
 		A1TEST081F87618B00CA10FF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -384,14 +383,12 @@
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GestureRecognizer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GestureRecognizer";
 			};
 			name = Debug;
 		};
 		A1TEST0A1F87618B00CA10FF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -408,7 +405,6 @@
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GestureRecognizer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GestureRecognizer";
 			};
 			name = Release;
 		};
