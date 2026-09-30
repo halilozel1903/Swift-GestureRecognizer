@@ -11,7 +11,10 @@ final class GestureStateLogTarget: NSObject {
 
     @objc
     func logState(_ recognizer: UIGestureRecognizer) {
-        store?.append(recognizerName: name, state: recognizer.state)
+        let state = recognizer.state
+        Task { @MainActor [weak store, name] in
+            store?.append(recognizerName: name, state: state)
+        }
     }
 }
 
