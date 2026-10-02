@@ -1,4 +1,4 @@
-# Swift Gesture Recognizer 👀
+# Swift Gesture Recognizer
 
 [![Platform](https://img.shields.io/badge/platform-iOS-lightgrey.svg)](https://developer.apple.com/ios/)
 [![iOS](https://img.shields.io/badge/iOS-18.0%2B-blue.svg)](https://developer.apple.com/ios/)
@@ -8,44 +8,48 @@
 [![CI](https://github.com/halilozel1903/swift-gesturerecognizer/actions/workflows/ci.yml/badge.svg)](https://github.com/halilozel1903/swift-gesturerecognizer/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A small UIKit playground that demonstrates the `UIGestureRecognizer` family on a single interactive card.
-Tapping the card swaps the profile — exactly like the original demo — while the other recognizers let you
-drag, scale, rotate and browse the card with your fingers.
+An interactive UIKit sample that demonstrates standard and custom `UIGestureRecognizer` APIs on a single profile card.
+The demo is fully programmatic (no storyboards), uses Swift 6 strict concurrency, SF Symbols instead of bundled photos,
+and ships with a live gesture log, runtime toggles, and unit tests for core gesture math.
 
-The project is written entirely in code (no storyboards), targets the Swift 6 language mode with
-complete strict concurrency checking, and uses SF Symbols so that no binary image assets are required.
+## Gesture features
 
-## ✨ Gesture Features
-
-| Gesture | Recognizer | Behaviour |
+| Gesture | API | What it does |
 | --- | --- | --- |
-| Single tap | `UITapGestureRecognizer` | Swaps to the next profile (image + name + role) |
-| Double tap | `UITapGestureRecognizer` (`numberOfTapsRequired = 2`) | Resets position, scale and rotation |
-| Long press | `UILongPressGestureRecognizer` | Dims the card while held, resets it on release |
-| Swipe left / right | `UISwipeGestureRecognizer` | Browses forward / backward through the profiles |
-| Pan | `UIPanGestureRecognizer` | Drags the card around the screen |
-| Pinch | `UIPinchGestureRecognizer` | Scales the card between 0.6x and 2.5x |
-| Rotation | `UIRotationGestureRecognizer` | Rotates the card and reports the angle |
+| Single tap | `UITapGestureRecognizer` | Advances to the next profile |
+| Double tap | `UITapGestureRecognizer` (`numberOfTapsRequired = 2`) | Resets transform and profile layout |
+| Long press | `UILongPressGestureRecognizer` | Dims the card while held, resets on release |
+| Swipe left / right | `UISwipeGestureRecognizer` | Browses profiles forward / backward |
+| Pan | `UIPanGestureRecognizer` | Drags the card; release applies deceleration + spring |
+| Pinch | `UIPinchGestureRecognizer` | Scales the card between 0.6× and 2.5× |
+| Rotation | `UIRotationGestureRecognizer` | Rotates the card and reports degrees |
+| Screen edge pan | `UIScreenEdgePanGestureRecognizer` | Swipe from the left edge to open settings |
+| Hover / pointer | `UIHoverGestureRecognizer` | Highlights the card when a pointer is over it (iPad / trackpad) |
+| Circle stroke | `CircleStrokeGestureRecognizer` (custom) | Detects a closed circular path drawn on the card |
+| Context menu | `UIContextMenuInteraction` | Quick actions: next profile, reset, clear log |
 
-Additional details worth noting:
+### Recognizer relationships
 
-- The single tap recognizer uses `require(toFail:)` so it never steals the double tap.
-- Pan waits for both swipe recognizers to fail, which keeps quick swipes and slow drags distinguishable.
-- Pan, pinch and rotation are recognized simultaneously through `UIGestureRecognizerDelegate`, since they
-  all feed the same `CGAffineTransform`.
-- Every gesture updates a status label and fires haptic feedback via `UIImpactFeedbackGenerator`.
-- Dynamic Type, Dark Mode (`registerForTraitChanges`) and VoiceOver labels are supported.
+| Dependent | Waits for | Why |
+| --- | --- | --- |
+| Single tap | Double tap | `require(toFail:)` avoids stealing double taps |
+| Pan | Swipe left / right | Keeps quick flicks separate from slow drags |
+| Screen edge pan | Card pan | Edge drawer opens only when the card is not being dragged |
 
-## 🧰 Requirements
+Pan, pinch, and rotation run simultaneously via `UIGestureRecognizerDelegate` because they compose a single
+`CGAffineTransform`. A scrolling **Gesture log** panel records recognizer state transitions, and **Settings**
+lets you disable individual recognizers at runtime (`isEnabled`).
+
+## Requirements
 
 | Tool | Version |
 | --- | --- |
-| Xcode | 16 or newer (the project uses buildable folders, `objectVersion = 77`) |
-| Swift | 6.0 language mode |
+| Xcode | 16 or newer (`objectVersion = 77`, buildable folders) |
+| Swift | 6.0 language mode, strict concurrency |
 | iOS deployment target | 18.0+ |
 | Devices | iPhone and iPad |
 
-## 🚀 Getting Started
+## Getting started
 
 ```bash
 git clone https://github.com/halilozel1903/swift-gesturerecognizer.git
@@ -53,59 +57,78 @@ cd swift-gesturerecognizer
 open GestureRecognizer.xcodeproj
 ```
 
-Select the `GestureRecognizer` scheme and an iOS simulator, then press <kbd>⌘</kbd> + <kbd>R</kbd>.
+Select the **GestureRecognizer** scheme, choose an iOS simulator, and press **⌘R**.
 
-Building from the command line:
+### Command-line build & test
 
 ```bash
+# Build
 xcodebuild build \
   -project GestureRecognizer.xcodeproj \
   -scheme GestureRecognizer \
   -destination 'generic/platform=iOS Simulator' \
   CODE_SIGNING_ALLOWED=NO
+
+# Unit tests (Swift Testing)
+xcodebuild test \
+  -project GestureRecognizer.xcodeproj \
+  -scheme GestureRecognizer \
+  -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+  CODE_SIGNING_ALLOWED=NO
 ```
 
-Linting (requires [SwiftLint](https://github.com/realm/SwiftLint)):
+### Lint
+
+Requires [SwiftLint](https://github.com/realm/SwiftLint):
 
 ```bash
 swiftlint lint --strict
 ```
 
-## 🗂 Project Structure
+## Project structure
 
 ```
 swift-gesturerecognizer/
 ├── GestureRecognizer.xcodeproj/
 │   └── xcshareddata/xcschemes/GestureRecognizer.xcscheme
 ├── GestureRecognizer/
-│   ├── App/
-│   │   ├── AppDelegate.swift            # @main entry point, scene configuration
-│   │   └── SceneDelegate.swift          # Builds the window and root controller
-│   ├── Controllers/
-│   │   └── GestureViewController.swift  # Gesture wiring, transforms, status updates
-│   ├── Models/
-│   │   └── Profile.swift                # Demo profiles (name, role, SF Symbol, tint)
-│   ├── Views/
-│   │   └── GestureCardView.swift        # The interactive card
-│   └── Assets.xcassets/                 # App icon and dynamic profile colors
-├── .github/workflows/ci.yml             # Build + SwiftLint on every push and PR
+│   ├── App/                         # @main, scene setup
+│   ├── Controllers/                 # Playground + settings screens
+│   ├── Gestures/                    # Custom recognizer, pan physics, circle detection
+│   ├── Models/                      # Profile, log entries, recognizer catalog
+│   ├── Services/                    # Log store, settings, state logging helper
+│   ├── Views/                       # Card, log panel, dependency summary
+│   └── Assets.xcassets/
+├── GestureRecognizerTests/          # Swift Testing unit tests
+├── .github/workflows/ci.yml         # macOS build, test, SwiftLint
 ├── .swiftlint.yml
 └── .swift-format
 ```
 
-The `Info.plist` is generated by Xcode from `INFOPLIST_KEY_*` build settings, and the app target uses a
-file-system synchronized folder, so new Swift files are picked up automatically without touching the
-project file.
+`Info.plist` is generated from build settings. The app target uses an Xcode synchronized root folder, so new Swift
+files under `GestureRecognizer/` are picked up automatically.
 
-## 🤝 Contributing
+## Screenshots
 
-Contributions are welcome!
+No checked-in PNG/GIF assets yet. Run the app in the iPhone or iPad simulator and capture the card, gesture log,
+and settings screen for documentation updates.
 
-1. Fork the repository and create a branch: `git checkout -b feature/my-improvement`.
-2. Keep commits small and use conventional subjects (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`).
-3. Make sure `xcodebuild build` and `swiftlint lint --strict` both pass.
+## Roadmap
+
+- [ ] Recorded simulator GIFs in `README` / docs
+- [ ] Additional custom recognizers (letter shapes, multi-finger taps)
+- [ ] SwiftUI wrapper for comparison with UIKit recognizers
+- [ ] Localized strings via String Catalog
+
+## Contributing
+
+Contributions are welcome.
+
+1. Fork the repo and create a branch (`feature/my-improvement`).
+2. Keep commits small with conventional subjects (`feat:`, `fix:`, `test:`, `docs:`, `chore:`).
+3. Ensure `xcodebuild build`, `xcodebuild test`, and `swiftlint lint --strict` pass.
 4. Open a pull request describing the change and how you verified it.
 
-## 📄 License
+## License
 
-This project is released under the MIT License. See [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).
