@@ -122,15 +122,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1700;
-				LastUpgradeCheck = 1700;
+				LastSwiftUpdateCheck = 2660;
+				LastUpgradeCheck = 2660;
 				ORGANIZATIONNAME = "Halil Özel";
 				TargetAttributes = {
 					9F1C679C1F87618B00CA10FF = {
-						CreatedOnToolsVersion = 9.0;
+						CreatedOnToolsVersion = 26.6;
 					};
 					A1TEST011F87618B00CA10FF = {
-						CreatedOnToolsVersion = 17.0;
+						CreatedOnToolsVersion = 26.6;
 					};
 				};
 			};
