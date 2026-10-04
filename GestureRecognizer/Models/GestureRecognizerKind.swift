@@ -1,6 +1,6 @@
 import Foundation
 
-enum GestureRecognizerKind: String, CaseIterable, Identifiable, Sendable {
+nonisolated enum GestureRecognizerKind: String, CaseIterable, Identifiable, Sendable {
     case singleTap
     case doubleTap
     case longPress
