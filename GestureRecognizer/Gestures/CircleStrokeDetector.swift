@@ -39,7 +39,7 @@ nonisolated enum CircleStrokeDetector {
 }
 
 private extension Array where Element == CGFloat {
-    var average: CGFloat? {
+    nonisolated var average: CGFloat? {
         guard !isEmpty else { return nil }
         return reduce(0, +) / CGFloat(count)
     }
