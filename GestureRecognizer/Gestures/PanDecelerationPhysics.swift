@@ -1,7 +1,7 @@
 import CoreGraphics
 import Foundation
 
-enum PanDecelerationPhysics {
+nonisolated enum PanDecelerationPhysics {
     /// Projects how far a pan would travel if deceleration matched UIScrollView defaults.
     static func projectedTranslation(
         velocity: CGPoint,

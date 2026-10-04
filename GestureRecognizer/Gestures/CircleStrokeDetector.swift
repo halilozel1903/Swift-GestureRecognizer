@@ -1,6 +1,6 @@
 import CoreGraphics
 
-enum CircleStrokeDetector {
+nonisolated enum CircleStrokeDetector {
     private static let minimumSampleCount = 12
     private static let closureRatioThreshold: CGFloat = 0.35
 

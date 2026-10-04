@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-struct GestureLogEntry: Hashable, Sendable {
+nonisolated struct GestureLogEntry: Hashable, Sendable {
     let timestamp: Date
     let recognizerName: String
     let stateDescription: String
@@ -14,7 +14,7 @@ struct GestureLogEntry: Hashable, Sendable {
 }
 
 extension UIGestureRecognizer.State {
-    var logDescription: String {
+    nonisolated var logDescription: String {
         switch self {
         case .possible: "possible"
         case .began: "began"
