@@ -13,24 +13,64 @@ concurrency:
 jobs:
   build:
     name: Build (iOS Simulator)
-    runs-on: macos-15
+    # Pin macos-26: newest stable GitHub image with Xcode 26.6 / Swift 6.3 / iOS 26 SDK.
+    # Xcode 27 is only a public preview on runners as of Oct 2026, so stay on 26.x.
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
 
-      - name: Select latest Xcode
-        run: sudo xcode-select --switch /Applications/Xcode.app
+      - name: Select Xcode 26.6
+        run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
 
-      - name: Show toolchain
+      - name: Show toolchain versions
         run: |
           xcodebuild -version
           swift --version
+
+      - name: Pick an iOS simulator
+        id: simulator
+        run: |
+          udid="$(
+            xcrun simctl list devices available -j |
+            python3 -c '
+          import json, sys
+          data = json.load(sys.stdin)
+
+          def collect(runtime_substr):
+              found = []
+              for runtime, rows in data.get("devices", {}).items():
+                  if runtime_substr not in runtime:
+                      continue
+                  for device in rows:
+                      if device.get("isAvailable") and "iPhone" in device.get("name", ""):
+                          found.append(device)
+              return found
+
+          # Prefer iOS 26 runtimes to match the deployment target / Swift 6.3 SDK pair.
+          devices = collect("iOS-26") or collect("iOS")
+          if not devices:
+              print("No available iPhone simulator", file=sys.stderr)
+              sys.exit(1)
+          preferred = next(
+              (d for d in devices if d["name"].startswith("iPhone 17")),
+              devices[-1],
+          )
+          print(preferred["udid"])
+          '
+          )"
+          if [ -z "${udid}" ]; then
+            echo "Failed to resolve an iPhone simulator UDID" >&2
+            exit 1
+          fi
+          echo "udid=${udid}" >> "$GITHUB_OUTPUT"
+          xcrun simctl list devices | grep "${udid}" || true
 
       - name: Build
         run: |
           xcodebuild build \
             -project GestureRecognizer.xcodeproj \
             -scheme GestureRecognizer \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination "id=${{ steps.simulator.outputs.udid }}" \
             CODE_SIGN_IDENTITY=- \
             AD_HOC_CODE_SIGNING_ALLOWED=YES
 
@@ -39,15 +79,18 @@ jobs:
           xcodebuild test \
             -project GestureRecognizer.xcodeproj \
             -scheme GestureRecognizer \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -destination "id=${{ steps.simulator.outputs.udid }}" \
             CODE_SIGN_IDENTITY=- \
             AD_HOC_CODE_SIGNING_ALLOWED=YES
 
   lint:
     name: SwiftLint
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
+
+      - name: Select Xcode 26.6
+        run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
 
       - name: Install SwiftLint
         run: brew install swiftlint

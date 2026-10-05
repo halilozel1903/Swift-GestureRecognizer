@@ -1,6 +1,6 @@
 import CoreGraphics
 
-enum CircleStrokeDetector {
+nonisolated enum CircleStrokeDetector {
     private static let minimumSampleCount = 12
     private static let closureRatioThreshold: CGFloat = 0.35
 
@@ -39,7 +39,7 @@ enum CircleStrokeDetector {
 }
 
 private extension Array where Element == CGFloat {
-    var average: CGFloat? {
+    nonisolated var average: CGFloat? {
         guard !isEmpty else { return nil }
         return reduce(0, +) / CGFloat(count)
     }
