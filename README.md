@@ -166,7 +166,8 @@ swift-gesturerecognizer/
 │   ├── Services/                    # Log store, settings, state logging helper
 │   ├── Views/                       # Card, log panel, dependency summary
 │   └── Assets.xcassets/
-├── GestureRecognizerTests/          # Swift Testing unit tests
+├── GestureRecognizerTests/          # Hostless Swift Testing suites (nonisolated)
+├── docs/screenshots/                # Simulator captures for the README (add when available)
 ├── .github/workflows/ci.yml         # macos-26 + Xcode 26.6 / Swift 6.3 build, test, SwiftLint
 ├── .swiftlint.yml
 └── .swift-format
@@ -180,11 +181,28 @@ can run off the main actor.
 
 ## Screenshots
 
-No checked-in PNG/GIF assets yet. Run the app in the iPhone or iPad simulator and capture the card, gesture log,
-and settings screen for documentation updates.
+Real simulator captures are not checked into this repository yet (this documentation pass was authored on a
+Linux agent without an iOS Simulator runtime). Do **not** commit placeholder or generated fake PNGs.
+
+When you have a Mac with Xcode 26.6, run the app (Xcode or the CLI steps above), capture the following, and
+drop the files under [`docs/screenshots/`](docs/screenshots/):
+
+| File | What to capture |
+| --- | --- |
+| `docs/screenshots/playground-iphone.png` | Gesture Playground — profile card, hint text, dependency summary, gesture log |
+| `docs/screenshots/settings-iphone.png` | Settings drawer / screen — per-recognizer `isEnabled` toggles |
+| `docs/screenshots/playground-ipad.png` | Optional iPad layout (hover / pointer highlight is easiest to show here) |
+
+Then link them here, for example:
+
+```markdown
+![Gesture Playground on iPhone](docs/screenshots/playground-iphone.png)
+![Settings](docs/screenshots/settings-iphone.png)
+```
 
 ## Roadmap
 
+- [ ] Checked-in simulator screenshots under `docs/screenshots/`
 - [ ] Recorded simulator GIFs in `README` / docs
 - [ ] Additional custom recognizers (letter shapes, multi-finger taps)
 - [ ] SwiftUI wrapper for comparison with UIKit recognizers
