@@ -57,18 +57,32 @@ stays on the newest stable pair (iOS 26 + Xcode 26.6 / Swift 6.3).
 
 ## Getting started
 
+### Clone
+
 ```bash
 git clone https://github.com/halilozel1903/swift-gesturerecognizer.git
 cd swift-gesturerecognizer
+```
+
+### Open & run in Xcode
+
+```bash
 open GestureRecognizer.xcodeproj
 ```
 
-Select the **GestureRecognizer** scheme, choose an iOS simulator, and press **⌘R**.
+Select the **GestureRecognizer** scheme, choose an **iOS 26** simulator (for example iPhone 17), and press
+<kbd>⌘</kbd><kbd>R</kbd>.
 
-### Command-line build & test
+### Command-line workflow (Swift 6.3 / iOS 26)
+
+Requires a Mac with **Xcode 26.6** (Swift **6.3** toolchain) and an available **iOS 26** simulator runtime.
+The shared **GestureRecognizer** scheme builds the app and runs hostless Swift Testing suites under
+`GestureRecognizerTests/` (`SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated`; no `TEST_HOST` app launch).
+
+#### 1. Resolve a simulator
 
 ```bash
-# Resolve an available iPhone simulator (prefer iOS 26 + iPhone 17)
+# Prefer iOS 26 + iPhone 17 when available
 udid="$(
   xcrun simctl list devices available -j |
   python3 -c '
@@ -88,31 +102,55 @@ preferred = next((d for d in devices if d["name"].startswith("iPhone 17")), devi
 print(preferred["udid"])
 '
 )"
+echo "Using simulator: ${udid}"
+```
 
-# Build
+#### 2. Build
+
+```bash
 xcodebuild build \
   -project GestureRecognizer.xcodeproj \
   -scheme GestureRecognizer \
   -destination "id=${udid}" \
-  CODE_SIGN_IDENTITY=- \
-  AD_HOC_CODE_SIGNING_ALLOWED=YES
-
-# Unit tests (Swift Testing, hostless logic target)
-xcodebuild test \
-  -project GestureRecognizer.xcodeproj \
-  -scheme GestureRecognizer \
-  -destination "id=${udid}" \
+  -derivedDataPath build \
   CODE_SIGN_IDENTITY=- \
   AD_HOC_CODE_SIGNING_ALLOWED=YES
 ```
 
-### Lint
+#### 3. Test (hostless)
+
+```bash
+# Swift Testing only — circle detector, pan physics, log store (no UI host app)
+xcodebuild test \
+  -project GestureRecognizer.xcodeproj \
+  -scheme GestureRecognizer \
+  -destination "id=${udid}" \
+  -derivedDataPath build \
+  CODE_SIGN_IDENTITY=- \
+  AD_HOC_CODE_SIGNING_ALLOWED=YES
+```
+
+#### 4. Run on the simulator
+
+After a successful **Build** step (with `-derivedDataPath build`):
+
+```bash
+app="build/Build/Products/Debug-iphonesimulator/GestureRecognizer.app"
+
+xcrun simctl bootstatus "${udid}" -b
+xcrun simctl install "${udid}" "${app}"
+xcrun simctl launch "${udid}" com.ozel.halil.GestureRecognizer
+```
+
+#### 5. Lint
 
 Requires [SwiftLint](https://github.com/realm/SwiftLint):
 
 ```bash
 swiftlint lint --strict
 ```
+
+CI on GitHub Actions (`macos-26` + Xcode 26.6) runs the same build, hostless test, and SwiftLint steps.
 
 ## Project structure
 
