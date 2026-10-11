@@ -26,7 +26,7 @@ extension Profile {
         ),
         Profile(
             id: 1,
-            name: "İbrahim",
+            name: "Ibrahim",
             role: "Mobile Engineer",
             symbolName: "person.crop.square.fill",
             tintName: "ProfileSecondary"

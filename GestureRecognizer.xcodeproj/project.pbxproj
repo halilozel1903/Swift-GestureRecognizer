@@ -124,7 +124,7 @@
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2660;
 				LastUpgradeCheck = 2660;
-				ORGANIZATIONNAME = "Halil Özel";
+				ORGANIZATIONNAME = "Halil Ozel";
 				TargetAttributes = {
 					9F1C679C1F87618B00CA10FF = {
 						CreatedOnToolsVersion = 26.6;
