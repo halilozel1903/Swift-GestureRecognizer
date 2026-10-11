@@ -210,7 +210,7 @@ Then link them here, for example:
 
 ## Contributing
 
-Contributions are welcome.
+Contributions are welcome. All user-facing strings, comments, logs, docs, and commit messages must be in English.
 
 1. Fork the repo and create a branch (`feature/my-improvement`).
 2. Keep commits small with conventional subjects (`feat:`, `fix:`, `test:`, `docs:`, `chore:`).
